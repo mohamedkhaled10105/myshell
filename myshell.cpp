@@ -20,24 +20,24 @@ extern char **environ; // access environment variables
 vector<string> tokenize(string input) {
     vector<string> tokens;
     stringstream ss(input);
-    string word;
-    while (ss >> word)
+    string word; 
+    while (ss >> word) 
         tokens.push_back(word);
-    return tokens;
+    return tokens; 
 }
 
 // Display prompt with current directory
 void displayPrompt() {
     char cwd[PATH_MAX];
     getcwd(cwd, sizeof(cwd));
-    cout << cwd << " > ";
+    cout << cwd << " > "; 
 }
 
 // List directory contents
 void listDirectory(string path) {
     DIR *dir = opendir(path.c_str());
     if (!dir) {
-        perror("dir");
+        perror("dir"); 
         return;
     }
     struct dirent *entry;
@@ -84,7 +84,7 @@ void executeExternal(vector<string> tokens, bool background,
 
     pid_t pid = fork();
 
-    if (pid < 0) {
+    if (pid < 0) { 
         perror("fork failed");
         return;
     }
@@ -112,9 +112,9 @@ void executeExternal(vector<string> tokens, bool background,
             close(fd);
         }
 
-        execvp(args[0], args.data());
+        execvp(args[0], args.data()); 
         perror("exec failed"); // Only runs if execvp fails
-        exit(1);
+        exit(1); 
     }
     else { // Parent process
         if (!background)
@@ -158,7 +158,7 @@ void processCommand(string input) {
 
     if (cmd == "cd") {
         char cwd[PATH_MAX];
-        if (cleaned.size() == 1)
+        if (cleaned.size() == 1) 
             cout << getcwd(cwd, sizeof(cwd)) << endl;
         else {
             if (chdir(cleaned[1].c_str()) != 0) perror("cd");
@@ -166,7 +166,7 @@ void processCommand(string input) {
             setenv("PWD", cwd, 1);
         }
     }
-    else if (cmd == "dir") {
+    else if (cmd == "dir") { 
         string path = (cleaned.size() > 1) ? cleaned[1] : ".";
         listDirectory(path);
     }
@@ -179,8 +179,8 @@ void processCommand(string input) {
         for (int i = 1; i < cleaned.size(); i++) cout << cleaned[i] << " ";
         cout << endl;
     }
-    else if (cmd == "help") { help(); }
-    else if (cmd == "pause") { pauseShell(); }
+    else if (cmd == "help") { help(); } 
+    else if (cmd == "pause") { pauseShell(); } 
     else if (cmd == "quit") { exit(0); }
     else {
         executeExternal(cleaned, background, inputFile, outputFile, append);
@@ -192,14 +192,14 @@ void processCommand(string input) {
 int main(int argc, char *argv[]) {
 
     // Batch mode
-    if (argc > 1) {
+    if (argc > 1) { 
         ifstream file(argv[1]);
         if (!file) { cout << "Batch file not found\n"; return 1; }
-        string line;
+        string line; 
         while (getline(file, line)) processCommand(line);
-        return 0;
+        return 0; 
     }
-
+  
     // Interactive mode
     string input;
         while (true) {
